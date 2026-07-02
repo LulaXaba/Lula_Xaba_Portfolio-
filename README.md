@@ -1,7 +1,9 @@
 ⚡ Sifund'sihle Lula Xaba (Luh)
 
 Technical Business Analyst & Software Developer
+
 📍 Johannesburg | Durban, South Africa  
+
 "Willing to relocate"
 
 
