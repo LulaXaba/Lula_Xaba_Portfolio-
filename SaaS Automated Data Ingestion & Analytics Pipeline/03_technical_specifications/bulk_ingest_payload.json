@@ -1,0 +1,54 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Data Ingestion API",
+    "version": "2.0.0",
+    "description": "Asynchronous endpoint for bulk uploading client datasets."
+  },
+  "paths": {
+    "/api/v2/ingest/fitness-data": {
+      "post": {
+        "summary": "Submit bulk exercise data for processing",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "client_id": "c_88421",
+                "batch_id": "batch_20260702_001",
+                "webhook_url": "https://client.com/webhooks/ingest-status",
+                "records": [
+                  {
+                    "exercise_id": "ex_991",
+                    "name": "Barbell Back Squat",
+                    "equipment": "BARBELL",
+                    "difficulty": "INTERMEDIATE"
+                  },
+                  {
+                    "exercise_id": "ex_992",
+                    "name": "Bodyweight Pushup",
+                    "equipment": "NONE",
+                    "difficulty": "BEGINNER"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Batch accepted for asynchronous processing",
+            "content": {
+              "application/json": {
+                "example": {
+                  "batch_id": "batch_20260702_001",
+                  "status": "QUEUED",
+                  "message": "Payload validation started. Await webhook for final status."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  ingestion-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_ingestion_target
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SecurePassword123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - db-data:/var/opt/mssql
+
+  mock-api-gateway:
+    image: wiremock/wiremock:latest
+    container_name: ingestion_api_gateway
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./03_technical_specifications:/home/wiremock
+
+volumes:
+  db-data:
