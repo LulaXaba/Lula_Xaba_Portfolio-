@@ -7,7 +7,7 @@
 
 
 
-*  *
+
 
 > **"Bridging Business Strategy and System Architecture."**
 
