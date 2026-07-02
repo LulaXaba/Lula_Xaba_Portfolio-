@@ -1,0 +1,57 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "FMA API Specifications",
+    "version": "2.0.0",
+    "description": "Contracts for inbound IoT telemetry and outbound ERP work order generation. Security Note: All edge-to-cloud API ingestion requires Mutual TLS (mTLS) authentication."
+  },
+  "paths": {
+    "/api/v1/telemetry/ingest": {
+      "post": {
+        "summary": "Ingest payload from vehicle On-Board Computer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "asset_id": "CAT-797F-MIN042",
+                "timestamp": "2026-07-02T10:45:00Z",
+                "metrics": {
+                  "engine_rpm": 1850,
+                  "engine_oil_temp_celsius": 118.5,
+                  "hydraulic_pressure_bar": 210.4
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": { "description": "Payload Accepted for Stream Processing" }
+        }
+      }
+    },
+    "/api/erp/plant-maintenance/work-order": {
+      "post": {
+        "summary": "Create Emergency Maintenance Order in SAP/Oracle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "asset_id": "CAT-797F-MIN042",
+                "priority": "HIGH",
+                "fault_classification": "ENGINE_SYSTEMS",
+                "telemetry_evidence": {
+                  "fault_code": "ERR-ENG-OIL-OVERHEAT",
+                  "recorded_value": "118.5 C",
+                  "duration_minutes": 6
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "ERP Work Order Successfully Created (Returns WO ID)" }
+        }
+      }
+    }
+  }
+}
