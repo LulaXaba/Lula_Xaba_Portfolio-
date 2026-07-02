@@ -1,0 +1,250 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Remittance Platform Core API",
+    "version": "1.0.0",
+    "description": "API specifications for initiating cross-border transactions and retrieving status updates.",
+    "contact": {
+      "name": "Technical BA Team",
+      "email": "api-support@remittance-platform.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.remittance-platform.com/v1",
+      "description": "Production API"
+    }
+  ],
+  "paths": {
+    "/api/v1/transactions/initiate": {
+      "post": {
+        "summary": "Initiate a new remittance transaction",
+        "description": "Triggered when a user confirms a transfer. Calculates risk score and routes to compliance or settlement.",
+        "operationId": "initiateTransaction",
+        "tags": ["Transactions"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sender_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "usr_9845f2a1-b3c9-4f8e"
+                  },
+                  "recipient_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "usr_77291a8c-d2b5-4x9z"
+                  },
+                  "financials": {
+                    "type": "object",
+                    "properties": {
+                      "send_amount": {
+                        "type": "number",
+                        "format": "decimal",
+                        "example": 5000.00
+                      },
+                      "send_currency": {
+                        "type": "string",
+                        "example": "ZAR"
+                      },
+                      "receive_currency": {
+                        "type": "string",
+                        "example": "USD"
+                      }
+                    },
+                    "required": ["send_amount", "send_currency", "receive_currency"]
+                  },
+                  "payment_method": {
+                    "type": "string",
+                    "enum": ["EFT_LINK", "CREDIT_CARD", "BANK_TRANSFER", "MOBILE_WALLET"],
+                    "example": "EFT_LINK"
+                  },
+                  "webhook_callback": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://clientapp.com/webhooks/tx-status"
+                  }
+                },
+                "required": ["sender_id", "recipient_id", "financials", "payment_method"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Transaction Accepted & Queued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_id": {
+                      "type": "string",
+                      "example": "tx_5592-abcd-1234"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["INITIATED", "KYC_HOLD", "PROCESSING", "SETTLED", "FAILED"],
+                      "example": "KYC_HOLD"
+                    },
+                    "estimated_settlement": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-07-03T12:00:00Z"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Transaction under routine compliance review."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation Error (e.g., Daily Limit Exceeded)"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid API Key"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/transactions/{transaction_id}/status": {
+      "get": {
+        "summary": "Retrieve real-time transaction status",
+        "description": "Get the current status and event history of a transaction",
+        "operationId": "getTransactionStatus",
+        "tags": ["Transactions"],
+        "parameters": [
+          {
+            "name": "transaction_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "tx_5592-abcd-1234"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction Status Retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_id": {
+                      "type": "string",
+                      "example": "tx_5592-abcd-1234"
+                    },
+                    "current_status": {
+                      "type": "string",
+                      "enum": ["INITIATED", "KYC_HOLD", "PROCESSING", "SETTLED", "FAILED"],
+                      "example": "PROCESSING"
+                    },
+                    "last_updated": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-07-02T10:15:30Z"
+                    },
+                    "cleared_compliance": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "timestamp": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/kyc/verify": {
+      "post": {
+        "summary": "Initiate KYC verification for a user",
+        "description": "Submit user documents for KYC verification",
+        "operationId": "initiateKYCVerification",
+        "tags": ["KYC"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "document_type": {
+                    "type": "string",
+                    "enum": ["PASSPORT", "NATIONAL_ID", "DRIVER_LICENSE"]
+                  },
+                  "document_base64": {
+                    "type": "string",
+                    "description": "Base64 encoded document image"
+                  }
+                },
+                "required": ["user_id", "document_type", "document_base64"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "KYC Verification Initiated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "record_id": {
+                      "type": "string"
+                    },
+                    "verification_status": {
+                      "type": "string",
+                      "example": "PENDING"
+                    },
+                    "risk_score": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
