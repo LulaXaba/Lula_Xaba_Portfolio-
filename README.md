@@ -2,8 +2,9 @@
 **Technical Business Analyst & Software Developer**
 
 📍 Johannesburg | Durban, South Africa
-
 *Willing to relocate*
+
+
 
 > **"Bridging Business Strategy and System Architecture."**
 
