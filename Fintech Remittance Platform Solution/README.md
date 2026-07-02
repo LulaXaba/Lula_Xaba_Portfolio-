@@ -168,9 +168,6 @@ For production deployment, see [`05_analytics_and_reporting/cloud_cost_analysis.
 
 ---
 
-## �📧 Questions?
-
-This case study demonstrates enterprise-grade Technical Business Analysis for a regulated fintech platform. For questions or clarifications about the architecture, please refer to the individual artifact documentation in each folder.
 
 ---
 
