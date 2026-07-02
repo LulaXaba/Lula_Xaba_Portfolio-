@@ -7,6 +7,8 @@
 
 
 
+*  *
+
 > **"Bridging Business Strategy and System Architecture."**
 
 I build clean, high-fidelity systems where business strategy meets engineering reality.
