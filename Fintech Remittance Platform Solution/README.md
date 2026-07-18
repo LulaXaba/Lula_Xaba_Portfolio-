@@ -167,7 +167,7 @@ For production deployment, see [`05_analytics_and_reporting/cloud_cost_analysis.
 | Cost Projections | TCO & profitability model | [`05_analytics_and_reporting/cloud_cost_analysis.md`](05_analytics_and_reporting/cloud_cost_analysis.md) |
 
 ---
-
+https://remittance-intelligencedashboard-3111.ai.studio
 
 ---
 
