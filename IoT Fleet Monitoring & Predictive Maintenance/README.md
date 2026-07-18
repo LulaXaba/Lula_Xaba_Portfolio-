@@ -24,3 +24,5 @@ Heavy industrial fleets traditionally rely on run-to-failure or manual schedule-
 │   └── fleet_telemetry_schema.sql      # DDL and Anomaly Detection Stored Procedure
 └── 📂 05_analytics_and_reporting
     └── power_bi_semantic_model.md      # BI Star Schema and DAX KPIs
+    
+"https://iot-fleetpredictivemaintenance.ai.studio"          
